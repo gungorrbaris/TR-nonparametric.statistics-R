@@ -1,0 +1,147 @@
+---
+title: "a"
+output: html_document
+date: "2022-11-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Bu yazıda R Programlama dili ile, parametrik olmayan bağımsız ve tek örnekleme sahip veriler için kullanılan Bağımsız Tek Örneklem Konum Testlerini göreceğiz. 
+
+## Veri
+
+Analiz boyunca kullanılan veri, Almanya 2005 seçimlerine aittir. Bu veride 4 parti için 16 eyaletteki aldıkları oy sayıları verilmiştir. 
+
+Veriye buradan ulaşabilirsiniz: <a href="https://vincentarelbundock.github.io/Rdatasets/doc/vcd/Bundestag2005.html">Veri</a>
+
+```{r}
+veri <-read.csv("https://raw.githubusercontent.com/gungorrbaris/TR-nonparametric.statistics-R/main/data/data.csv",sep = ";")
+knitr::kable(head(veri,n=10), align = "c")
+```
+
+# Normallik testleri 
+
+> Parametrik olmayan testlerin uygulanabilmesi için verilerimizin normal dağılmaması gerekir.
+
+> 4 parti yani 4 farklı grup olduğu için her grup için farklı normallik testlerinin yapılması gerekmektedir.
+
+**4 partiyi oylarını ayrı ayrı tanımlayalım:**
+
+```{r}
+spd <- veri$Oy[c(1:16)] 
+cdu <- veri$Oy[c(17:32)] 
+gruene <- veri$Oy[c(33:48)] 
+fdp<- veri $Oy[c(49:64)]
+```
+
+
+**SPD**
+
+Ho: SPD partisi ile normal dağılım arasında fark yoktur.<br>
+H1: SPD partisi ile normal dağılım arasında fark vardır.
+
+
+```{r}
+shapiro.test(spd)
+```
+
+SPD partisi için,
+
+- p değeri= 0.0005408 < α=0.05 olduğu için Ho RED. Yani SPD partisi normal dağılım göstermiyor.
+
+
+
+**CDU**
+
+Ho: CDU partisi ile normal dağılım arasında fark yoktur.<br>
+H1: CDU partisi ile normal dağılım arasında fark vardır.
+
+
+```{r}
+shapiro.test(cdu)
+```
+
+CDU partisi için,
+
+- p değeri= 0.001074 < α=0.05 olduğu için Ho RED. Yani SPD partisi normal dağılım göstermiyor.
+
+
+
+**Gruene**
+
+Ho: Gruene partisi ile normal dağılım arasında fark yoktur.<br>
+H1: Gruene partisi ile normal dağılım arasında fark vardır.
+
+
+```{r}
+shapiro.test(gruene)
+```
+
+Gruene partisi için,
+
+- p değeri= 0.001885 < α=0.05 olduğu için Ho RED. Yani SPD partisi normal dağılım göstermiyor.
+
+
+**FDP**
+
+Ho: FDP partisi ile normal dağılım arasında fark yoktur.<br>
+H1: FDP partisi ile normal dağılım arasında fark vardır.
+
+
+```{r}
+shapiro.test(fdp)
+```
+
+FDP partisi için,
+
+- p değeri= 0.007786 < α=0.05 olduğu için Ho RED. Yani SPD partisi normal dağılım göstermiyor.
+
+
+> Dört grubun da normal dağılım göstermediğini gördük. Normal olmayan veriler için parametrik olmayan testlerin kullanılması gerekir.
+
+
+# Bağımsız iki Örneklem Testi – Gruplar Arasındaki Farkın Test Edilmesi
+
+Bu analizimizde SPD ve CDU partilerinin oy oranları arasındaki farklılığı inceleyelim.
+
+
+> Seçtiğimiz iki bağımsız grubun birbirleri ile konum yönünden farkını anlamak için Mann-Whitney testini kullanabiliriz.
+
+## Mann-Whitney Testi
+
+Ho: 𝜽spd = 𝜽cdu ( SPD partisinin oyları ile CDU partisinin oyları arasında fark yoktur.) <br>
+Hs: 𝜽spd > 𝜽cdu ( SPD partisinin oyları CDU partisinin oylarından büyüktür.)
+
+
+```{r}
+wilcox.test(spd,cdu,alternative="greater",conf.level=0.95,paired=FALSE)
+```
+**Mann-Whitney Testi sonucuna bakıldığında**
+
+- p değeri= 0.3481 > α=0.05 olduğu için Ho RED EDİLEMEZ. Yani SPD partisinin, CDU partisinden fazla oy aldığını söyleyemeyiz.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
